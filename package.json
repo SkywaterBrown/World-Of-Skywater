@@ -1,0 +1,13 @@
+{
+  "name": "world-of-skywater",
+  "version": "1.0.0",
+  "description": "A personal archive of essays, poems, mathematics, pictures, and stray thoughts.",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "serve": "npx serve dist"
+  },
+  "keywords": ["static-site", "blog", "personal"],
+  "author": "Skywater",
+  "license": "MIT"
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random - World of Skywater</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; gap: 1rem; }
+        .random-msg { color: var(--text-muted); font-size: 0.9rem; }
+        .random-link { color: var(--accent-orange); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+        .random-link:hover { border-bottom-color: var(--accent-orange-bright); }
+    </style>
+</head>
+<body>
+    <p class="random-msg">Selecting a random post...</p>
+    <script>
+    (function() {
+        const urls = ["2026-03-25-markdown-test.html","2026-03-24-lake-reflection.html","2026-03-23-the-topology-of-coffee.html","2026-03-22-fibonacci-in-nature.html","2026-03-21-static.html"];
+        const pick = urls[Math.floor(Math.random() * urls.length)];
+        window.location.replace(pick);
+    })();
+    </script>
+</body>
+</html>
