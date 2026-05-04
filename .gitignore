@@ -1,0 +1,12 @@
+```
+# Build artifacts
+dist/
+build/
+# Dependencies
+node_modules/
+# Package management
+package-lock.json
+# Logs and temp files
+*.log
+*.tmp
+```

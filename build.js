@@ -57,7 +57,16 @@ function readTemplate(name) {
 }
 
 function escapeXml(str) {
-  return str.replace(/[<>&'"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]);
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+    .replace(/`/g, '&#96;')
+    .replace(/\\/g, '&#92;')
+    .replace(/\u0000/g, '\\0');
 }
 
 function slugify(text) {
@@ -186,14 +195,14 @@ function parsePage(category, filename, content) {
     const fm = htmlFmMatch[1];
     fm.split('\n').forEach(line => {
       const m = line.match(/^(\w+):\s*(.+)$/);
-      if (m) meta[m[1]] = m[2].trim();
+      if (m) meta[m[1]] = escapeXml(m[2].trim());
     });
     body = content.slice(htmlFmMatch[0].length).trim();
   } else if (yamlFmMatch) {
     const fm = yamlFmMatch[1];
     fm.split('\n').forEach(line => {
       const m = line.match(/^(\w+):\s*(.+)$/);
-      if (m) meta[m[1]] = m[2].trim();
+      if (m) meta[m[1]] = escapeXml(m[2].trim());
     });
     body = content.slice(yamlFmMatch[0].length).trim();
   }
@@ -202,12 +211,12 @@ function parsePage(category, filename, content) {
   const dateSlugMatch = basename.match(/^(\d{4}-\d{2}-\d{2})-(.+)$/);
 
   const date = meta.date || (dateSlugMatch ? dateSlugMatch[1] : new Date().toISOString().split('T')[0]);
-  const slug = meta.slug || (dateSlugMatch ? dateSlugMatch[2] : basename);
-  const title = meta.title || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const slug = meta.slug ? escapeXml(meta.slug) : (dateSlugMatch ? dateSlugMatch[2] : basename);
+  const title = meta.title ? escapeXml(meta.title) : slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   let tags = [];
   if (meta.tags) {
-    tags = meta.tags.split(/[,\s]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+    tags = meta.tags.split(/[,\\s]+/).map(t => escapeXml(t.trim().toLowerCase())).filter(Boolean);
   }
 
   const draft = meta.draft === 'true' || meta.draft === 'yes';
@@ -703,7 +712,14 @@ function searchContent() {
 
     grouped[tag].forEach(page => {
       const li = document.createElement('li');
-      li.innerHTML = '<a href="' + page.url + '">' + page.title + '</a><span class="date">' + page.date + '</span>';
+      const anchor = document.createElement('a');
+      anchor.href = page.url;
+      anchor.textContent = page.title;
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'date';
+      dateSpan.textContent = page.date;
+      li.appendChild(anchor);
+      li.appendChild(dateSpan);
       list.appendChild(li);
     });
 
